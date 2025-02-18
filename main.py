@@ -3,8 +3,26 @@ from fastapi import FastAPI, Request, HTTPException
 from supabase import create_client
 import os
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+
+# Define the origins you want to allow (React frontend in this case)
+origins = [
+    "http://localhost:3001",  # React development server
+    "https://your-react-app.com",  # If deployed (change it accordingly)
+]
+
+# Add CORS middleware to your app
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Allows specific origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allows all headers
+)
+
 
 # Stripe and Supabase Setup
 STRIPE_SECRET_KEY = os.environ.get("strip_secrect_key")
