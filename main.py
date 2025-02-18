@@ -31,6 +31,7 @@ async def stripe_webhook(request: Request):
 
     if event["type"] == "checkout.session.completed":
         session = event["data"]["object"]
+        print(session)
         customer_email = session.get("customer_email")
         amount = session["amount_total"] / 100  # Convert cents to dollars
         order_id = session["id"]
