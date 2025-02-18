@@ -11,7 +11,7 @@ app = FastAPI()
 # Define the origins you want to allow (React frontend in this case)
 origins = [
     "http://localhost:3001",  # React development server
-    "https://your-react-app.com",  # If deployed (change it accordingly)
+    "https://strong-heliotrope-73b25f.netlify.app",  # If deployed (change it accordingly)
 ]
 
 # Add CORS middleware to your app
