@@ -40,7 +40,7 @@ async def create_checkout_session(amount: dict):
     try:
         # Create Checkout Session
         session = stripe.checkout.Session.create(
-            payment_method_types=['card', 'google_pay', 'apple_pay'],  # Allows card, Google Pay, and Apple Pay
+            payment_method_types=['card'],  # Allows card, Google Pay, and Apple Pay
             line_items=[
                 {
                     'price_data': {
