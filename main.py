@@ -35,7 +35,8 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
 @app.post("/create-checkout-session/")
-async def create_checkout_session(amount: int):
+async def create_checkout_session(amount: dict):
+    
     try:
         # Create Checkout Session
         session = stripe.checkout.Session.create(
@@ -47,7 +48,7 @@ async def create_checkout_session(amount: int):
                         'product_data': {
                             'name': 'Product Name',  # Customize product name
                         },
-                        'unit_amount': amount,  # Amount in cents (e.g., $10 -> 1000 cents)
+                        'unit_amount': amount["value"],  # Amount in cents (e.g., $10 -> 1000 cents)
                     },
                     'quantity': 1,
                 },
