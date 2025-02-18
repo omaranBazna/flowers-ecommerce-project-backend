@@ -17,6 +17,7 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 @app.post("/webhook")
 async def stripe_webhook(request: Request):
     payload = await request.body()
+    print("received")
     sig_header = request.headers.get("stripe-signature")
 
     try:
