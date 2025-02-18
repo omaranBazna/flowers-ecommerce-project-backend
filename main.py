@@ -37,7 +37,7 @@ async def stripe_webhook(request: Request):
 
         # Save order in Supabase
         data = {"order_id": order_id, "email": customer_email, "amount": amount, "status": "Paid"}
-        response = supabase.table("orders").insert(data).execute()
+       ## response = supabase.table("orders").insert(data).execute()
         
         return {"status": "success", "message": "Order saved"}
 
