@@ -2,6 +2,7 @@ import stripe
 from fastapi import FastAPI, Request, HTTPException
 from supabase import create_client
 import os
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
@@ -13,6 +14,33 @@ SUPABASE_KEY =  os.environ.get("supabase_key")
 
 stripe.api_key = STRIPE_SECRET_KEY
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+
+@app.post("/create-checkout-session/")
+async def create_checkout_session(amount: int):
+    try:
+        # Create Checkout Session
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card', 'google_pay', 'apple_pay'],  # Allows card, Google Pay, and Apple Pay
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'usd',
+                        'product_data': {
+                            'name': 'Product Name',  # Customize product name
+                        },
+                        'unit_amount': amount,  # Amount in cents (e.g., $10 -> 1000 cents)
+                    },
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',  # You can also use 'subscription' for recurring payments
+            success_url='https://your-site.com/success',
+            cancel_url='https://your-site.com/cancel',
+        )
+        return JSONResponse({"sessionId": session.id})
+    except Exception as e:
+        return {"error": str(e)}
 
 @app.post("/webhook")
 async def stripe_webhook(request: Request):
