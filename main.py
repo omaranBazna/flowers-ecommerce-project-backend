@@ -98,9 +98,10 @@ async def stripe_webhook(request: Request):
             "phone": metadata.get("phone"),  
             "price": amount,  # Fixed typo
         }
-
-        response = supabase.table("Orders").insert(data).execute()
-        
+        try:
+            response = supabase.table("Orders").insert(data).execute()
+        except Exception as e:
+            print(str(e))
         return {"status": "success", "message": "Order saved"}
 
     return {"status": "ignored"}
