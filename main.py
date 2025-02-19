@@ -89,9 +89,17 @@ async def stripe_webhook(request: Request):
         amount = session["amount_total"] / 100  # Convert cents to dollars
         order_id = session["id"]
 
+        metadata = session.get("metadata", {})
+
         # Save order in Supabase
-        data = {"full_name":session["metadata"].get("name") ,"full_address":session["metadata"].get("address"),"phone":session["metadata"].get("phone"),"price":amoutn}
-        response = supabase.table("orders").insert(data).execute()
+        data = {
+            "full_name": metadata.get("name"),  
+            "full_address": metadata.get("address"),  
+            "phone": metadata.get("phone"),  
+            "price": amount,  # Fixed typo
+        }
+
+        response = supabase.table("Orders").insert(data).execute()
         
         return {"status": "success", "message": "Order saved"}
 
