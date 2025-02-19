@@ -56,6 +56,12 @@ async def create_checkout_session(amount: dict):
             mode='payment',  # You can also use 'subscription' for recurring payments
             success_url='https://your-site.com/success',
             cancel_url='https://your-site.com/cancel',
+            metadata={
+                "price":amount["value"],
+                "name":amount["details"]["name"],
+                "address":amount["details"]["address"],
+                "phone":amount["details"]["phone"]
+            }
         )
         return JSONResponse({"sessionId": session.id})
     except Exception as e:
@@ -84,8 +90,8 @@ async def stripe_webhook(request: Request):
         order_id = session["id"]
 
         # Save order in Supabase
-        data = {"order_id": order_id, "email": customer_email, "amount": amount, "status": "Paid"}
-       ## response = supabase.table("orders").insert(data).execute()
+        data = {"full_name":session["metadata"].get("name") ,"full_address":session["metadata"].get("address"),"phone":session["metadata"].get("phone"),"price":amoutn}
+        response = supabase.table("orders").insert(data).execute()
         
         return {"status": "success", "message": "Order saved"}
 
