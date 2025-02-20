@@ -58,9 +58,14 @@ async def create_checkout_session(amount: dict):
             cancel_url='https://your-site.com/cancel',
             metadata={
                 "price":amount["value"],
-                "name":amount["details"]["name"],
-                "address":amount["details"]["address"],
-                "phone":amount["details"]["phone"]
+                "name":amount["details"]["full_name"],
+                "address":amount["details"]["full_address"],
+                "phone":amount["details"]["phone"],
+                "kind":amount["details"]["kind"],
+                "shape":amount["details"]["shape"],
+                "design":amount["details"]["design"],
+                "font":amount["details"]["font"],
+                "message":amount["details"]["message"]
             }
         )
         return JSONResponse({"sessionId": session.id})
@@ -93,10 +98,15 @@ async def stripe_webhook(request: Request):
 
         # Save order in Supabase
         data = {
-            "full_name": metadata.get("name"),  
-            "full_address": metadata.get("address"),  
+            "full_name": metadata.get("full_name"),  
+            "full_address": metadata.get("full_address"),  
             "phone": metadata.get("phone"),  
-            "price": amount,  # Fixed typo
+            "price": amount, 
+            "kind":metadata.get("kind"),
+            "shape":metadata.get("shape"),
+            "design":metadata.get("design"),
+            "font":metadata.get("font"),
+            "message":metadata.get("message")
         }
         try:
             response = supabase.table("Orders").insert(data).execute()
